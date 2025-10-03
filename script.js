@@ -157,27 +157,39 @@ class LaddooGame {
             this.keys[e.key] = false;
         });
         
-        // Touch controls for mobile
+        // Touch controls for mobile - ultra smooth version
         this.canvas.addEventListener('touchstart', (e) => {
             e.preventDefault();
             this.isTouching = true;
             this.touchStartX = e.touches[0].clientX;
             this.touchCurrentX = e.touches[0].clientX;
-        });
+        }, { passive: false });
         
         this.canvas.addEventListener('touchmove', (e) => {
             e.preventDefault();
-            if (this.isTouching) {
+            if (this.isTouching && e.touches.length > 0) {
                 this.touchCurrentX = e.touches[0].clientX;
             }
-        });
+        }, { passive: false });
         
         this.canvas.addEventListener('touchend', (e) => {
             e.preventDefault();
             this.isTouching = false;
             this.touchControls.left = false;
             this.touchControls.right = false;
-        });
+        }, { passive: false });
+        
+        this.canvas.addEventListener('touchcancel', (e) => {
+            e.preventDefault();
+            this.isTouching = false;
+            this.touchControls.left = false;
+            this.touchControls.right = false;
+        }, { passive: false });
+        
+        // Prevent scrolling on the entire game container
+        document.getElementById('gameContainer').addEventListener('touchmove', (e) => {
+            e.preventDefault();
+        }, { passive: false });
         
         // Optional on-screen controls (if present)
         const leftBtn = document.getElementById('leftBtn');
@@ -433,21 +445,18 @@ class LaddooGame {
             this.catcher.x += this.catcher.speed;
         }
         
-        // Touch controls - swipe gesture
+        // Touch controls - ultra smooth swipe gesture
         if (this.isTouching) {
             const touchDelta = this.touchCurrentX - this.touchStartX;
-            const threshold = 30; // Minimum swipe distance
+            const sensitivity = 0.8; // Increased for more responsive movement
             
-            if (Math.abs(touchDelta) > threshold) {
-                if (touchDelta < 0) {
-                    // Swipe left
-                    this.catcher.x -= this.catcher.speed * 2; // Faster movement for touch
-                } else {
-                    // Swipe right
-                    this.catcher.x += this.catcher.speed * 2; // Faster movement for touch
-                }
-                // Update start position to prevent continuous movement
-                this.touchStartX = this.touchCurrentX;
+            // Ultra smooth movement based on touch delta
+            if (Math.abs(touchDelta) > 2) { // Very small threshold for immediate response
+                const movement = touchDelta * sensitivity;
+                this.catcher.x += movement;
+                
+                // Smooth reset for continuous movement without drift
+                this.touchStartX += movement * 0.5;
             }
         }
         
@@ -767,7 +776,14 @@ class LaddooGame {
             
             const size = 25 * this.minusOneScale; // Much smaller size with scale
             const x = this.gameWidth / 2 - size / 2;
-            const y = 220; // Near the score counter
+            
+            // Different positioning for mobile vs desktop
+            let y;
+            if (window.innerWidth <= 768) {
+                y = 440; // Adjusted up by 40px on mobile (timer is at 220px + 220px more)
+            } else {
+                y = 220; // Near the score counter on desktop
+            }
             
             this.ctx.drawImage(img, x, y, size, size);
             
