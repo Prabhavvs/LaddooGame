@@ -43,6 +43,11 @@ class LaddooGame {
             right: false
         };
         
+        // Touch position tracking
+        this.touchStartX = 0;
+        this.touchCurrentX = 0;
+        this.isTouching = false;
+        
         // Assets
         this.images = {};
         this.imageSources = {
@@ -150,6 +155,28 @@ class LaddooGame {
         
         document.addEventListener('keyup', (e) => {
             this.keys[e.key] = false;
+        });
+        
+        // Touch controls for mobile
+        this.canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            this.isTouching = true;
+            this.touchStartX = e.touches[0].clientX;
+            this.touchCurrentX = e.touches[0].clientX;
+        });
+        
+        this.canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (this.isTouching) {
+                this.touchCurrentX = e.touches[0].clientX;
+            }
+        });
+        
+        this.canvas.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            this.isTouching = false;
+            this.touchControls.left = false;
+            this.touchControls.right = false;
         });
         
         // Optional on-screen controls (if present)
@@ -406,7 +433,25 @@ class LaddooGame {
             this.catcher.x += this.catcher.speed;
         }
         
-        // Touch controls
+        // Touch controls - swipe gesture
+        if (this.isTouching) {
+            const touchDelta = this.touchCurrentX - this.touchStartX;
+            const threshold = 30; // Minimum swipe distance
+            
+            if (Math.abs(touchDelta) > threshold) {
+                if (touchDelta < 0) {
+                    // Swipe left
+                    this.catcher.x -= this.catcher.speed * 2; // Faster movement for touch
+                } else {
+                    // Swipe right
+                    this.catcher.x += this.catcher.speed * 2; // Faster movement for touch
+                }
+                // Update start position to prevent continuous movement
+                this.touchStartX = this.touchCurrentX;
+            }
+        }
+        
+        // Touch controls - button controls
         if (this.touchControls.left) {
             this.catcher.x -= this.catcher.speed;
         }
