@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catch 4 Laddoos - Win a Gift!</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+</head>
+<body>
+    <div id="gameContainer">
+        <!-- Start Screen -->
+        <div id="startScreen" class="screen active">
+            <div class="close-btn">×</div>
+            <div class="banner">
+                <img class="banner-img" src="assets/banner.png" alt="Catch 5 Laddoos" />
+            </div>
+            <img class="start-char-img" src="assets/first screen.png" alt="Character" />
+            
+            <!-- Rules Box -->
+            <img class="rules-box" src="assets/Rules box.png" alt="Game Rules" />
+            
+            <button id="startBtn" class="start-button start-image" aria-label="Start">
+                <img class="start-img" src="assets/start.png" alt="Start" />
+            </button>
+        </div>
+
+        <!-- Countdown Screen -->
+        <div id="countdownScreen" class="screen countdown-screen">
+            <div class="countdown-container">
+                <div class="countdown-number" id="countdownNumber">3</div>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="gameScreen" class="screen">
+            <div class="close-btn">×</div>
+            <div class="banner">
+                <img class="banner-img" src="assets/banner.png" alt="Catch 5 Laddoos" />
+            </div>
+            <!-- Timer Bar -->
+            <div class="timer-container">
+                <div class="timer-bar">
+                    <div class="timer-fill" id="timerFill"></div>
+                </div>
+                <div class="timer-text" id="timerText">15</div>
+            </div>
+            <canvas id="gameCanvas" width="375" height="667"></canvas>
+            
+        </div>
+
+        <!-- Win Screen -->
+        <div id="winScreen" class="screen win-screen">
+            <div class="close-btn">×</div>
+            <canvas id="trophyCanvas" width="375" height="667"></canvas>
+            <div id="confettiContainer" class="confetti-container"></div>
+            <img class="won-image" src="assets/won.png" alt="Won" />
+            <button id="playAgainBtn" class="start-button playagain-image" aria-label="Play Again">
+                <img class="playagain-img" src="assets/playagain.png" alt="Play Again" />
+            </button>
+        </div>
+
+        <!-- Lose Screen -->
+        <div id="loseScreen" class="screen lose-screen">
+            <div class="close-btn">×</div>
+            <canvas id="cryingCanvas" width="375" height="667"></canvas>
+            <img class="lost-image" src="assets/lost.png" alt="Lost" />
+            <button id="tryAgainBtn" class="start-button playagain-image" aria-label="Try Again">
+                <img class="playagain-img" src="assets/playagain.png" alt="Try Again" />
+            </button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
