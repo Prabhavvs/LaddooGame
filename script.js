@@ -26,14 +26,16 @@ class LaddooGame {
         
         // Laddoos
         this.laddoos = [];
-        this.laddooSpawnRate = 0.015; // Probability per frame (increased from 0.008)
-        this.laddooSpeed = 2.5;
+        // Higher spawn rate and speed for mobile devices
+        this.laddooSpawnRate = window.innerWidth <= 768 ? 0.035 : 0.015;
+        this.laddooSpeed = window.innerWidth <= 768 ? 4.0 : 2.5; // Faster on mobile
         this.spawnPadding = 60; // allow spawning slightly offscreen to increase effective width
         
         // Bad objects (ball, poop, hanger, boots)
         this.badObjects = [];
-        this.badObjectSpawnRate = 0.015; // Increased spawn rate for bad objects
-        this.badObjectSpeed = 2.5;
+        // Higher spawn rate and speed for mobile devices
+        this.badObjectSpawnRate = window.innerWidth <= 768 ? 0.035 : 0.015;
+        this.badObjectSpeed = window.innerWidth <= 768 ? 4.0 : 2.5; // Faster on mobile
         this.badObjectTypes = ['ball', 'poop', 'hanger', 'boots'];
         
         // Controls
@@ -47,6 +49,11 @@ class LaddooGame {
         this.touchStartX = 0;
         this.touchCurrentX = 0;
         this.isTouching = false;
+        
+        // Frame rate tracking for mobile optimization
+        this.frameCount = 0;
+        this.lastTime = performance.now();
+        this.currentFPS = 60;
         
         // Assets
         this.images = {};
@@ -412,6 +419,9 @@ class LaddooGame {
         // Update trophy drops (always update, even on win screen)
         this.updateTrophyDrops();
         
+        // Track frame rate and adjust spawn rates for mobile
+        this.updateFrameRate();
+
         if (!this.gameRunning) return;
         
         // Handle character movement
@@ -445,18 +455,18 @@ class LaddooGame {
             this.catcher.x += this.catcher.speed;
         }
         
-        // Touch controls - ultra smooth swipe gesture
+        // Touch controls - smooth swipe gesture with reduced sensitivity
         if (this.isTouching) {
             const touchDelta = this.touchCurrentX - this.touchStartX;
-            const sensitivity = 0.8; // Increased for more responsive movement
+            const sensitivity = 0.3; // Reduced sensitivity for less jerky movement
             
-            // Ultra smooth movement based on touch delta
-            if (Math.abs(touchDelta) > 2) { // Very small threshold for immediate response
+            // Smooth movement based on touch delta with higher threshold
+            if (Math.abs(touchDelta) > 8) { // Higher threshold to reduce sensitivity
                 const movement = touchDelta * sensitivity;
                 this.catcher.x += movement;
                 
                 // Smooth reset for continuous movement without drift
-                this.touchStartX += movement * 0.5;
+                this.touchStartX += movement * 0.3; // Reduced reset speed
             }
         }
         
@@ -741,6 +751,24 @@ class LaddooGame {
         this.ctx.shadowBlur = 0;
         this.ctx.shadowOffsetX = 0;
         this.ctx.shadowOffsetY = 0;
+    }
+    
+    updateFrameRate() {
+        this.frameCount++;
+        const currentTime = performance.now();
+        
+        // Calculate FPS every second
+        if (currentTime - this.lastTime >= 1000) {
+            this.currentFPS = this.frameCount;
+            this.frameCount = 0;
+            this.lastTime = currentTime;
+            
+            // Keep mobile spawn rates high for better gameplay
+            if (window.innerWidth <= 768) {
+                this.laddooSpawnRate = 0.035; // Keep high spawn rate on mobile
+                this.badObjectSpawnRate = 0.035;
+            }
+        }
     }
     
     updateMinusOneAnimation() {
