@@ -231,6 +231,34 @@ body {
     animation: rulesPulse 3s ease-in-out infinite;
 }
 
+/* Desktop rules - show on larger screens */
+.rules-desktop {
+    display: block;
+}
+
+.rules-mobile {
+    display: none;
+}
+
+/* Mobile rules - show on smaller screens */
+@media (max-width: 768px) {
+    .rules-desktop {
+        display: none;
+    }
+    
+    .rules-mobile {
+        display: block;
+        width: 280px; /* Slightly smaller for mobile */
+    }
+}
+
+/* Extra small mobile screens */
+@media (max-width: 480px) {
+    .rules-mobile {
+        width: 250px; /* Even smaller for very small screens */
+    }
+}
+
 @keyframes rulesPulse {
     0%, 100% {
         opacity: 1;
@@ -449,6 +477,28 @@ body {
     z-index: 1000;
 }
 
+/* Mobile timer positioning - below laddoo counter */
+@media (max-width: 768px) {
+    .timer-container {
+        position: absolute; /* Change from fixed to absolute */
+        top: 220px; /* Position below the laddoo eaten counter + 100px total */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 280px; /* Slightly narrower for mobile */
+        padding: 0 10px; /* Add some padding */
+        z-index: 1000;
+    }
+}
+
+/* Extra small mobile screens */
+@media (max-width: 480px) {
+    .timer-container {
+        top: 210px; /* Adjust for smaller screens + 100px total */
+        width: 260px; /* Narrower for small screens */
+        padding: 0 15px; /* More padding for very small screens */
+    }
+}
+
 .timer-bar {
     width: 100%;
     height: 8px;
@@ -473,6 +523,21 @@ body {
     font-weight: bold;
     margin-top: 5px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+/* Mobile timer text */
+@media (max-width: 768px) {
+    .timer-text {
+        font-size: 16px; /* Slightly smaller for mobile */
+        margin-top: 8px; /* More space from bar */
+    }
+}
+
+@media (max-width: 480px) {
+    .timer-text {
+        font-size: 14px; /* Even smaller for very small screens */
+        margin-top: 10px; /* More space for readability */
+    }
 }
 
 /* Win/Lose Messages */
